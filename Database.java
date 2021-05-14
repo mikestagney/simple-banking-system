@@ -35,7 +35,7 @@ public class Database {
     public void addCardToDB(CreditCard card) {
         try (Connection con = dataSource.getConnection()) {
             try (Statement statement = con.createStatement()) {
-                String number = Long.toString(card.getCardNumber());
+                String number = card.getCardNumber();
                 String pin = card.getPIN();
                 int balance = card.getBalance();
 

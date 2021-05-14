@@ -49,12 +49,12 @@ public class Main {
     public static void loginAccount() {
         boolean isCorrectAccount = false;
         System.out.println("Enter your card number:");
-        long cardNum = Long.parseLong(getInputFromUser());
+        String cardNum = getInputFromUser();
         System.out.println("Enter your PIN:");
         String pin = getInputFromUser();
         System.out.println();
         for (CreditCard currentCard : cardList) {
-            if(currentCard.getCardNumber() == cardNum && currentCard.getPIN().equals(pin)) {
+            if(currentCard.getCardNumber().equals(cardNum) && currentCard.getPIN().equals(pin)) {
                 System.out.println("You have successfully logged in!");
                 System.out.println();
                 activeCard = currentCard;

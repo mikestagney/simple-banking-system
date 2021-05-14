@@ -3,7 +3,7 @@ package banking;
 import java.util.Random;
 
 public class CreditCard {
-    private long cardNumber;
+    private String cardNumber;
     private String PIN;
     private int balance;
 
@@ -13,7 +13,7 @@ public class CreditCard {
         balance = 0;
     }
 
-    private long createCardNumber() {
+    private String createCardNumber() {
         StringBuilder accountBuilder = new StringBuilder("400000");
         int luhnAlgorithmSum = 8;  // sum of 4 0 0 0 0 0 with odd digits multiplied by 2
 
@@ -34,7 +34,7 @@ public class CreditCard {
             checksum++;
         }
         accountBuilder.append(checksum);
-        return Long.parseLong(accountBuilder.toString());
+        return accountBuilder.toString();
     }
     private String createPIN() {
         StringBuilder pinBuilder = new StringBuilder();
@@ -44,7 +44,7 @@ public class CreditCard {
         }
         return pinBuilder.toString();
     }
-    public long getCardNumber() {
+    public String getCardNumber() {
         return cardNumber;
     }
     public String getPIN() {
