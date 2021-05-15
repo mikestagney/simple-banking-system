@@ -7,11 +7,13 @@ public class Main {
     static String userChoice;
     static ArrayList<CreditCard> cardList = new ArrayList<>();
     static CreditCard activeCard;
+    static Database database;
+
 
     public static void main(String[] args) {
 
         String fileName = getDatabaseFilename(args);
-        Database database = new Database(fileName);
+        database = new Database(fileName);
 
         while (true) {
             mainMenu();
@@ -126,6 +128,7 @@ public class Main {
         System.out.println("Enter income");
         int income = Integer.parseInt(getInputFromUser());
         activeCard.addFunds(income);
+        database.addIncome(activeCard);
         System.out.println("Income was added!");
         System.out.println();
     }

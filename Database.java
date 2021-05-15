@@ -3,6 +3,7 @@ package banking;
 import org.sqlite.SQLiteDataSource;
 
 import java.sql.Connection;
+import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.sql.Statement;
 
@@ -45,15 +46,24 @@ public class Database {
                         pin + ", " +
                         balance + ")");
                 counter++;
-            } catch (SQLException e) {
-                e.printStackTrace();
             }
         } catch (SQLException e) {
             e.printStackTrace();
         }
-
-
     }
+    public void addIncome(CreditCard card) {
+        String updateIncome = "UPDATE card SET Balance = ? WHERE number = ?";
+        try (Connection con = dataSource.getConnection()) {
+            try (PreparedStatement prepStatement = con.prepareStatement(updateIncome)) {
+                prepStatement.setInt(1, card.getBalance());
+                prepStatement.setString(2, card.getCardNumber());
+                prepStatement.executeUpdate();
+            }
+        } catch (SQLException e) {
+                e.printStackTrace();
+        }
+    }
+
 
 
 
