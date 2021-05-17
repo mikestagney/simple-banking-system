@@ -35,16 +35,16 @@ public class Database {
     }
     public void addCardToDB(CreditCard card) {
         try (Connection con = dataSource.getConnection()) {
-            try (Statement statement = con.createStatement()) {
+            String addCard = "INSERT INTO card (id, number, pin, balance) VALUES(? ? ? ?)";
+            try (PreparedStatement prepStatement = con.prepareStatement(addCard)) {
                 String number = card.getCardNumber();
                 String pin = card.getPIN();
                 int balance = card.getBalance();
-
-                statement.executeUpdate("INSERT INTO card VALUES(" +
-                        counter + ", " +
-                        number + ", " +
-                        pin + ", " +
-                        balance + ")");
+                prepStatement.setInt(1, counter);
+                prepStatement.setString(2, number);
+                prepStatement.setString(3, pin);
+                prepStatement.setInt(4, balance);
+                prepStatement.executeUpdate();
                 counter++;
             }
         } catch (SQLException e) {
@@ -52,8 +52,8 @@ public class Database {
         }
     }
     public void addIncome(CreditCard card) {
-        String updateIncome = "UPDATE card SET Balance = ? WHERE number = ?";
         try (Connection con = dataSource.getConnection()) {
+            String updateIncome = "UPDATE card SET balance = ? WHERE number = ?";
             try (PreparedStatement prepStatement = con.prepareStatement(updateIncome)) {
                 prepStatement.setInt(1, card.getBalance());
                 prepStatement.setString(2, card.getCardNumber());
@@ -63,7 +63,17 @@ public class Database {
                 e.printStackTrace();
         }
     }
-
+    public void deleteCard(CreditCard card) {
+        try (Connection con = dataSource.getConnection()) {
+            String delete = "DELETE from card WHERE number = ?";
+            try (PreparedStatement prepStatement = con.prepareStatement(delete)) {
+                prepStatement.setString(1, card.getCardNumber());
+                prepStatement.executeUpdate();
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
 
 
 

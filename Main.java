@@ -86,11 +86,11 @@ public class Main {
                 case('2'):
                     addIncome();
                     break;
+                case('3'):
+                    doTransfer();
+                    break;
                 case('4'):
-                    // put in delete card method call here
-                    activeCard = null;
-                    System.out.println("The account has been closed!");
-                    System.out.println();
+                    deleteCard();
                     keepManaging = false;
                     break;
                 case('5'):
@@ -132,8 +132,17 @@ public class Main {
         System.out.println("Income was added!");
         System.out.println();
     }
+    public static void doTransfer() {
 
 
+
+    }
+    public static void deleteCard() {
+        database.deleteCard(activeCard);
+        activeCard = null;
+        System.out.println("The account has been closed!");
+        System.out.println();
+    }
     public static String getInputFromUser() {
         Scanner input = new Scanner(System.in);
         return input.nextLine();
