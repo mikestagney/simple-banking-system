@@ -2,10 +2,7 @@ package banking;
 
 import org.sqlite.SQLiteDataSource;
 
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.SQLException;
-import java.sql.Statement;
+import java.sql.*;
 
 public class Database {
 
@@ -14,17 +11,17 @@ public class Database {
 
     Database(String filename) {
         String url = "jdbc:sqlite:" + filename;
-        System.out.println(url);
         dataSource = new SQLiteDataSource();
         dataSource.setUrl(url);
 
         try (Connection con = dataSource.getConnection()) {
-            try (Statement statement = con.createStatement()) {
-                statement.executeUpdate("CREATE TABLE IF NOT EXISTS card(" +
-                        "id INTEGER PRIMARY KEY," +
-                        "number TEXT," +
-                        "pin TEXT," +
-                        "balance INTEGER DEFAULT 0)");
+            String setup = "CREATE TABLE IF NOT EXISTS card(" +
+                    "id INTEGER," +
+                    "number TEXT," +
+                    "pin VARCHAR," +
+                    "balance INTEGER DEFAULT 0)";
+            try (PreparedStatement statement = con.prepareStatement(setup)) {
+                statement.executeUpdate();
             } catch (SQLException e) {
                 e.printStackTrace();
             }
@@ -35,7 +32,7 @@ public class Database {
     }
     public void addCardToDB(CreditCard card) {
         try (Connection con = dataSource.getConnection()) {
-            String addCard = "INSERT INTO card (id, number, pin, balance) VALUES(? ? ? ?)";
+            String addCard = "INSERT INTO card (id, number, pin, balance) VALUES (?, ?, ?, ?)";
             try (PreparedStatement prepStatement = con.prepareStatement(addCard)) {
                 String number = card.getCardNumber();
                 String pin = card.getPIN();
@@ -62,6 +59,27 @@ public class Database {
         } catch (SQLException e) {
                 e.printStackTrace();
         }
+    }
+    public CreditCard findCard(String number, String pin) {
+        try (Connection con = dataSource.getConnection()) {
+            String selection = "SELECT number, pin, balance FROM card WHERE number = ?";
+            try (PreparedStatement select = con.prepareStatement(selection)) {
+                select.setString(1, number);
+                ResultSet query = select.executeQuery();
+                if (!query.next()) {
+                    return null;
+                }
+                String dbCardNum = query.getString("number");
+                String dbPIN = query.getString("pin");
+                int balance = query.getInt("balance");
+                if (number.equals(dbCardNum) && pin.equals(dbPIN)) {
+                    return new CreditCard(number, pin, balance);
+                }
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return null;
     }
     public void deleteCard(CreditCard card) {
         try (Connection con = dataSource.getConnection()) {

@@ -1,11 +1,11 @@
 package banking;
 
 import java.util.ArrayList;
+import java.util.Locale;
 import java.util.Scanner;
 
 public class Main {
     static String userChoice;
-    static ArrayList<CreditCard> cardList = new ArrayList<>();
     static CreditCard activeCard;
     static Database database;
 
@@ -23,7 +23,6 @@ public class Main {
                 case ('1'):
                     CreditCard card = createCard();
                     database.addCardToDB(card);
-                    cardList.add(card);
                     break;
                 case('2'):
                     loginAccount();
@@ -55,14 +54,15 @@ public class Main {
         System.out.println("Enter your PIN:");
         String pin = getInputFromUser();
         System.out.println();
-        for (CreditCard currentCard : cardList) {
-            if(currentCard.getCardNumber().equals(cardNum) && currentCard.getPIN().equals(pin)) {
-                System.out.println("You have successfully logged in!");
-                System.out.println();
-                activeCard = currentCard;
-                isCorrectAccount = true;
-                manageCard();
-            }
+        cardNum = cardNum.trim();
+        pin = pin.trim();
+
+        activeCard = database.findCard(cardNum, pin);
+        if(activeCard != null) {
+            System.out.println("You have successfully logged in!");
+            System.out.println();
+            isCorrectAccount = true;
+            manageCard();
         }
         if (!isCorrectAccount) {
             System.out.println("Wrong card number or PIN!");
