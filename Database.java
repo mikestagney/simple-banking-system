@@ -62,7 +62,7 @@ public class Database {
     }
     public CreditCard findCard(String number, String pin) {
         try (Connection con = dataSource.getConnection()) {
-            String selection = "SELECT number, pin, balance FROM card WHERE number = ?";
+            String selection = "SELECT number, pin, balance FROM card WHERE number LIKE ?"; // changed from = to LIKE
             try (PreparedStatement select = con.prepareStatement(selection)) {
                 select.setString(1, number);
                 ResultSet query = select.executeQuery();
@@ -81,6 +81,27 @@ public class Database {
         }
         return null;
     }
+    public CreditCard findCard(String number) {
+        try (Connection con = dataSource.getConnection()) {
+            String selection = "SELECT number, pin, balance FROM card WHERE number LIKE ?"; // changed from = to LIKE
+            try (PreparedStatement select = con.prepareStatement(selection)) {
+                select.setString(1, number);
+                ResultSet query = select.executeQuery();
+                if (!query.next()) {
+                    return null;
+                }
+                String dbCardNum = query.getString("number");
+                String dbPIN = query.getString("pin");
+                int balance = query.getInt("balance");
+                if (number.equals(dbCardNum)) {
+                    return new CreditCard(dbCardNum, dbPIN, balance);
+                }
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
     public void deleteCard(CreditCard card) {
         try (Connection con = dataSource.getConnection()) {
             String delete = "DELETE from card WHERE number = ?";
@@ -92,8 +113,4 @@ public class Database {
             e.printStackTrace();
         }
     }
-
-
-
-
 }

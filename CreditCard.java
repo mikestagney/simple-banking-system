@@ -64,10 +64,10 @@ public class CreditCard {
     public void transferOutFunds(int transfer) {
         balance -= transfer;
     }
-    public boolean checkLuhnAlgorithm(String number) {
+    public static boolean checkLuhnAlgorithm(String number) {
         int checkNum = Character.getNumericValue(number.charAt(number.length() - 1));
         int luhnAlgorithmSum = 0;
-        for (int i = 0; i < number.length() - 2; i++) {
+        for (int i = 0; i < number.length() - 1; i++) {
             int digit = Character.getNumericValue(number.charAt(i));
             if (i % 2 == 0) {
                 digit *= 2;

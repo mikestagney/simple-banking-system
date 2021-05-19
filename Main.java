@@ -1,7 +1,5 @@
 package banking;
 
-import java.util.ArrayList;
-import java.util.Locale;
 import java.util.Scanner;
 
 public class Main {
@@ -54,11 +52,11 @@ public class Main {
         System.out.println("Enter your PIN:");
         String pin = getInputFromUser();
         System.out.println();
-        cardNum = cardNum.trim();
-        pin = pin.trim();
-
-        activeCard = database.findCard(cardNum, pin);
-        if(activeCard != null) {
+        String numTrim = cardNum.trim();
+        String pinTrim = pin.trim();
+        // tried trimming and checking length of strings but Jetbrains #6 test still fails
+        activeCard = database.findCard(numTrim, pinTrim);
+        if (activeCard != null) {
             System.out.println("You have successfully logged in!");
             System.out.println();
             isCorrectAccount = true;
@@ -133,9 +131,38 @@ public class Main {
         System.out.println();
     }
     public static void doTransfer() {
-
-
-
+        System.out.println("Transfer");
+        System.out.println("Enter card number:");
+        String cardNumTransfer = getInputFromUser();
+        if (activeCard.getCardNumber().equals(cardNumTransfer)) {
+            System.out.println("You can't transfer money to the same account!");
+            System.out.println();
+            return;
+        }
+        if (!CreditCard.checkLuhnAlgorithm(cardNumTransfer)) {
+            System.out.println("Probably you made a mistake in the card number. Please try again!");
+            System.out.println();
+            return;
+        }
+        CreditCard transferCard = database.findCard(cardNumTransfer);
+        if (transferCard == null) {
+            System.out.println("Such a card does not exist");
+            System.out.println();
+            return;
+        }
+        System.out.println("Enter how much money you want to transfer:");
+        int money = Integer.parseInt(getInputFromUser());
+        if (money > activeCard.getBalance()) {
+            System.out.println("Not enough money!");
+            System.out.println();
+            return;
+        }
+        activeCard.transferOutFunds(money);
+        database.addIncome(activeCard);
+        transferCard.addFunds(money);
+        database.addIncome(transferCard);
+        System.out.println("Success!");
+        System.out.println();
     }
     public static void deleteCard() {
         database.deleteCard(activeCard);
