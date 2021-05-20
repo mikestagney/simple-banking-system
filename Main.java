@@ -43,8 +43,6 @@ public class Main {
         }
         return dbFilename;
     }
-
-
     public static void loginAccount() {
         boolean isCorrectAccount = false;
         System.out.println("Enter your card number:");
@@ -52,11 +50,8 @@ public class Main {
         System.out.println("Enter your PIN:");
         String pin = getInputFromUser();
         System.out.println();
-        String numTrim = cardNum.trim();
-        String pinTrim = pin.trim();
-        // tried trimming and checking length of strings but Jetbrains #6 test still fails
-        activeCard = database.findCard(numTrim, pinTrim);
-        if (activeCard != null) {
+        activeCard = database.findCard(cardNum);
+        if (activeCard != null && activeCard.getCardNumber().equals(cardNum) && activeCard.getPIN().equals(pin)) {
             System.out.println("You have successfully logged in!");
             System.out.println();
             isCorrectAccount = true;

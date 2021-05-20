@@ -52,18 +52,23 @@ public class CreditCard {
     public String getCardNumber() {
         return cardNumber;
     }
+
     public String getPIN() {
         return PIN;
     }
+
     public int getBalance() {
         return balance;
     }
+
     public void addFunds(int income) {
         balance += income;
     }
+
     public void transferOutFunds(int transfer) {
         balance -= transfer;
     }
+
     public static boolean checkLuhnAlgorithm(String number) {
         int checkNum = Character.getNumericValue(number.charAt(number.length() - 1));
         int luhnAlgorithmSum = 0;
@@ -79,7 +84,4 @@ public class CreditCard {
         }
         return (checkNum + luhnAlgorithmSum) % 10 == 0;
     }
-
-
-
 }

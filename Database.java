@@ -1,7 +1,6 @@
 package banking;
 
 import org.sqlite.SQLiteDataSource;
-
 import java.sql.*;
 
 public class Database {
@@ -22,13 +21,10 @@ public class Database {
                     "balance INTEGER DEFAULT 0)";
             try (PreparedStatement statement = con.prepareStatement(setup)) {
                 statement.executeUpdate();
-            } catch (SQLException e) {
-                e.printStackTrace();
             }
         } catch (SQLException e) {
             e.printStackTrace();
         }
-
     }
     public void addCardToDB(CreditCard card) {
         try (Connection con = dataSource.getConnection()) {
@@ -60,41 +56,19 @@ public class Database {
                 e.printStackTrace();
         }
     }
-    public CreditCard findCard(String number, String pin) {
+    public CreditCard findCard(String userNumber) {
         try (Connection con = dataSource.getConnection()) {
-            String selection = "SELECT number, pin, balance FROM card WHERE number LIKE ?"; // changed from = to LIKE
+            String selection = "SELECT number, pin, balance FROM card WHERE number = ?";
             try (PreparedStatement select = con.prepareStatement(selection)) {
-                select.setString(1, number);
+                select.setString(1, userNumber);
                 ResultSet query = select.executeQuery();
-                if (!query.next()) {
-                    return null;
-                }
-                String dbCardNum = query.getString("number");
-                String dbPIN = query.getString("pin");
-                int balance = query.getInt("balance");
-                if (number.equals(dbCardNum) && pin.equals(dbPIN)) {
-                    return new CreditCard(number, pin, balance);
-                }
-            }
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-        return null;
-    }
-    public CreditCard findCard(String number) {
-        try (Connection con = dataSource.getConnection()) {
-            String selection = "SELECT number, pin, balance FROM card WHERE number LIKE ?"; // changed from = to LIKE
-            try (PreparedStatement select = con.prepareStatement(selection)) {
-                select.setString(1, number);
-                ResultSet query = select.executeQuery();
-                if (!query.next()) {
-                    return null;
-                }
-                String dbCardNum = query.getString("number");
-                String dbPIN = query.getString("pin");
-                int balance = query.getInt("balance");
-                if (number.equals(dbCardNum)) {
-                    return new CreditCard(dbCardNum, dbPIN, balance);
+                if (query.next()) {
+                    String dbCardNum = query.getString("number");
+                    String dbPIN = query.getString("pin");
+                    int balance = query.getInt("balance");
+                    if (userNumber.equals(dbCardNum)) {
+                        return new CreditCard(userNumber, dbPIN, balance);
+                    }
                 }
             }
         } catch (SQLException e) {
