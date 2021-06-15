@@ -8,7 +8,7 @@ SQLite - great database to use for small projects
 
 Luhn Algorithm - one way to check if credit card numbers have been entered correctly
 
-Review of using Java Databse Connectivity (JDBC) 
+Review of using Java Database Connectivity (JDBC) 
 
 ### Details
 
